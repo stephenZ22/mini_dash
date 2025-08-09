@@ -1,0 +1,9 @@
+server:
+  port: 3001
+  log_level: debug
+database:
+  host: localhost
+  port: 5432
+  user: app_user
+  password: secure_password
+  name: app_db
