@@ -79,26 +79,8 @@ func startCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",
 		Short: "Start the Mini-Dash server",
-		Long:  "Start the Mini-Dash server with the specified URL and port.",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			if configFile == "" {
-				return fmt.Errorf("config file must be specified with --config")
-			}
-
-			if _, err := os.Stat(configFile); os.IsNotExist(err) {
-				return fmt.Errorf("config file does not exist: %s", configFile)
-			}
-
-			config.LoadConfig(configFile)
-			fmt.Printf("Loaded configuration from: %s\n", configFile)
-
-			// Here you would start the server using the loaded configuration.
-			fmt.Println("Starting Mini-Dash server...")
-
-			fmt.Printf("Server will run on port: %d, database port: %d\n", config.Cfg.Server.Port, config.Cfg.Database.Port)
-
-			return nil
-		},
+		Long:  "Start the Mini-Dash server with the specified config file and http listen port.",
+		RunE:  start_func,
 	}
 
 	cmd.Flags().StringVarP(
@@ -110,4 +92,26 @@ func startCmd() *cobra.Command {
 	)
 
 	return cmd
+}
+
+func start_func(cmd *cobra.Command, args []string) error {
+	if configFile == "" {
+		return fmt.Errorf("config file must be specified with --config")
+	}
+
+	if _, err := os.Stat(configFile); os.IsNotExist(err) {
+		return fmt.Errorf("config file does not exist: %s", configFile)
+	}
+
+	config.LoadConfig(configFile)
+	fmt.Printf("Loaded configuration from: %s\n", configFile)
+
+	// Here you would start the server using the loaded configuration.
+	fmt.Println("Starting Mini-Dash server...")
+
+	fmt.Printf("Server will run on port: %d, database port: %d\n", config.Cfg.Server.Port, config.Cfg.Database.Port)
+
+	// TODO: Initialize database connection with gorm
+	// TODO：add Run MiniDashApp http server
+	return nil
 }
