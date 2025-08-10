@@ -113,7 +113,6 @@ func start_func(cmd *cobra.Command, args []string) error {
 	fmt.Printf("Server will run on port: %d, database port: %d\n", config.Cfg.Server.Port, config.Cfg.Database.Port)
 
 	// TODO: Initialize database connection with gorm
-	// TODO：add Run MiniDashApp http server
 	app := server.NewMiniDashApp(nil) // Pass the database connection here when implemented
 	app.Run(config.Cfg.Server.Port)
 	return nil
