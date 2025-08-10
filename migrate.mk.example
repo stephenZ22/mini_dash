@@ -1,0 +1,35 @@
+.PHONY: migrate-create migrate-up migrate-down migrate-version
+
+MiGRATION_BIN := migrate
+MiGRATION_DIR := migrations
+
+DATABASE_DSN := "postgres://user:password@url:5432/databasename?sslmode=disable"
+
+migrate-create:
+	@if [ -z "$(name)" ]; then \
+		echo "Migration name is required. Use: make migrate-create name=<migration_name>"; \
+		exit 1; \
+	fi
+
+	@echo "Creating migration..."
+	@$(MiGRATION_BIN) create -ext sql -dir $(MiGRATION_DIR) $(name)
+
+migrate-up:
+	@echo "Running migrations up..."
+	@if [ -z "$(step)" ]; then \
+		$(MiGRATION_BIN) -path $(MiGRATION_DIR) -database $(DATABASE_DSN) up; \
+	else \
+		$(MiGRATION_BIN) -path $(MiGRATION_DIR) -database $(DATABASE_DSN) up $(step); \
+	fi
+
+migrate-down:
+	@echo "Running migrations down..."
+	@if [ -z "$(step)" ]; then \
+		$(MiGRATION_BIN) -path $(MiGRATION_DIR) -database $(DATABASE_DSN) down; \
+	else \
+		$(MiGRATION_BIN) -path $(MiGRATION_DIR) -database $(DATABASE_DSN) down $(step); \
+	fi
+
+migrate-version:
+	@echo "Checking migration version..."
+	@$(MiGRATION_BIN) -path $(MiGRATION_DIR) -database $(DATABASE_DSN) version
