@@ -1,3 +1,6 @@
+include migrate.mk
+
+.PHONY: all build-server build-client clean run-server run-client
 # 输出目录
 BIN_DIR := bin
 
@@ -27,7 +30,7 @@ clean:
 
 # 运行 server
 run-server: build-server
-	@$(SERVER_BIN)
+	@$(SERVER_BIN) start
 
 # 运行 client
 run-client: build-client
