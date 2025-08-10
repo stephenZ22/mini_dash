@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/stephenZ22/mini_dash/internal/server"
 	"github.com/stephenZ22/mini_dash/pkg/config"
 )
 
@@ -113,5 +114,7 @@ func start_func(cmd *cobra.Command, args []string) error {
 
 	// TODO: Initialize database connection with gorm
 	// TODO：add Run MiniDashApp http server
+	app := server.NewMiniDashApp(nil) // Pass the database connection here when implemented
+	app.Run(config.Cfg.Server.Port)
 	return nil
 }
