@@ -10,16 +10,18 @@ import (
 
 // TODO: Add database connection and other services as needed
 type MiniDashApp struct {
-	// Database   *gorm.DB
+	Database   *gorm.DB
 	httpServer *gin.Engine
 }
 
 func NewMiniDashApp(db *gorm.DB) *MiniDashApp {
 	r := gin.Default()
-	prject_handler := projects.NewProjectHandler()
+	project_repository := projects.NewProjectRepository(db)
+	project_service := projects.NewProjectService(project_repository)
+	prject_handler := projects.NewProjectHandler(project_service)
 	projects.RegisterRoutes(r, prject_handler)
 	return &MiniDashApp{
-		// Database:   db,
+		Database:   db,
 		httpServer: r,
 	}
 }

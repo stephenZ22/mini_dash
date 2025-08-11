@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stephenZ22/mini_dash/internal/server"
 	"github.com/stephenZ22/mini_dash/pkg/config"
+	"github.com/stephenZ22/mini_dash/pkg/db"
 )
 
 var configFile string
@@ -112,8 +113,20 @@ func start_func(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("Server will run on port: %d, database port: %d\n", config.Cfg.Server.Port, config.Cfg.Database.Port)
 
-	// TODO: Initialize database connection with gorm
-	app := server.NewMiniDashApp(nil) // Pass the database connection here when implemented
+	db, err := db.ConnectPostgres(
+		config.Cfg.Database.Host,
+		config.Cfg.Database.Port,
+		config.Cfg.Database.Username,
+		config.Cfg.Database.Password,
+		config.Cfg.Database.Database,
+		config.Cfg.Database.SslMode,
+		config.Cfg.Database.MaxConnects,
+	)
+
+	if err != nil {
+		return fmt.Errorf("failed to connect to database: %w", err)
+	}
+	app := server.NewMiniDashApp(db)
 	app.Run(config.Cfg.Server.Port)
 	return nil
 }
