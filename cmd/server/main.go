@@ -93,6 +93,8 @@ func startCmd() *cobra.Command {
 		"Path to config file",
 	)
 
+	cmd.SilenceUsage = true
+
 	return cmd
 }
 
