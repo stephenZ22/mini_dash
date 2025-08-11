@@ -21,7 +21,7 @@ func NewProjectRepository(db *gorm.DB) *ProjectRepository {
 
 func (r *ProjectRepository) Create(project *Project) error {
 
-	logger.MiniLogger().Debug("Creating project", "project", project)
+	logger.MiniLogger().Info("project Creating", "project:", project)
 	if err := r.db.Create(project).Error; err != nil {
 		return err
 	}

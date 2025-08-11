@@ -8,6 +8,7 @@ import (
 	"github.com/stephenZ22/mini_dash/internal/server"
 	"github.com/stephenZ22/mini_dash/pkg/config"
 	"github.com/stephenZ22/mini_dash/pkg/db"
+	"github.com/stephenZ22/mini_dash/pkg/logger"
 )
 
 var configFile string
@@ -124,6 +125,8 @@ func start_func(cmd *cobra.Command, args []string) error {
 		config.Cfg.Database.SslMode,
 		config.Cfg.Database.MaxConnects,
 	)
+
+	logger.Init(config.Cfg.Server.LogLevel)
 
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)

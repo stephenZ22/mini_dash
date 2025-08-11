@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stephenZ22/mini_dash/internal/projects"
+	"github.com/stephenZ22/mini_dash/pkg/logger"
 	"gorm.io/gorm"
 )
 
@@ -15,7 +16,8 @@ type MiniDashApp struct {
 }
 
 func NewMiniDashApp(db *gorm.DB) *MiniDashApp {
-	r := gin.Default()
+	r := gin.New()
+	r.Use(logger.GinLogger(logger.MiniLogger()), gin.Recovery()) // Use recovery middleware to handle panics
 	project_repository := projects.NewProjectRepository(db)
 	project_service := projects.NewProjectService(project_repository)
 	prject_handler := projects.NewProjectHandler(project_service)
