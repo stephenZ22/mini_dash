@@ -9,10 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectPostgres(host string, port int, user, password, dbname string) (*gorm.DB, error) {
-	// Build the connection string
-	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+// Build the connection string
+func ConnectPostgres(host string, port int, user, password, dbname string, sslmode string, max_connects int) (*gorm.DB, error) {
+	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+		host, port, user, password, dbname, sslmode)
 
 	// Connect to the PostgreSQL database
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
@@ -28,7 +28,7 @@ func ConnectPostgres(host string, port int, user, password, dbname string) (*gor
 	}
 
 	sqlDb.SetMaxIdleConns(10)               // Set maximum number of idle connections
-	sqlDb.SetMaxOpenConns(100)              // Set maximum number of open connections
+	sqlDb.SetMaxOpenConns(max_connects)     // Set maximum number of open connections
 	sqlDb.SetConnMaxLifetime(1 * time.Hour) // Set maximum connection lifetime (0 means no limit
 
 	return db, nil

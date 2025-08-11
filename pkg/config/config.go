@@ -17,6 +17,7 @@ type DatabaseConfig struct {
 	Username    string `mapstructure:"username"`
 	Password    string `mapstructure:"password"`
 	Database    string `mapstructure:"database"`
+	SslMode     string `mapstructure:"sslmode"`
 	MaxConnects int    `mapstructure:"max_connections"`
 }
 

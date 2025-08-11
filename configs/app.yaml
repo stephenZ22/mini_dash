@@ -4,6 +4,7 @@ server:
 database:
   host: localhost
   port: 5432
-  user: app_user
-  password: secure_password
-  name: app_db
+  username: dash_admin
+  password: 123456
+  database: minidash
+  sslmode: disable
