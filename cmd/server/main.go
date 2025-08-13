@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/stephenZ22/mini_dash/internal/server"
+	"github.com/stephenZ22/mini_dash/internal/app"
 	"github.com/stephenZ22/mini_dash/pkg/config"
 	"github.com/stephenZ22/mini_dash/pkg/db"
 	"github.com/stephenZ22/mini_dash/pkg/logger"
@@ -131,7 +131,7 @@ func start_func(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
-	app := server.NewMiniDashApp(db)
+	app := app.NewMiniDashApp(db)
 	app.Run(config.Cfg.Server.Port)
 	return nil
 }
