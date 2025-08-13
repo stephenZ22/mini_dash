@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/stephenZ22/mini_dash/internal/cards"
 	"github.com/stephenZ22/mini_dash/internal/projects"
 	"github.com/stephenZ22/mini_dash/internal/users"
 	"github.com/stephenZ22/mini_dash/pkg/logger"
@@ -28,6 +29,11 @@ func registerAllRoutes(router *gin.Engine, db *gorm.DB) *gin.Engine {
 	user_service := users.NewUserService(user_repository)
 	user_handler := users.NewUserHandler(user_service)
 	users.RegisterRoutes(router, user_handler)
+
+	card_repository := cards.NewCardRepository(db)
+	card_service := cards.NewCardService(card_repository)
+	card_handler := cards.NewCardHandler(card_service)
+	cards.RegisterRoutes(router, card_handler)
 
 	return router
 }
