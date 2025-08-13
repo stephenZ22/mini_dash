@@ -78,7 +78,6 @@ func (ph *ProjectHandler) UpdateProject(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return
 	}
-
 	project := Project{
 		Name:        updateProject.Name,
 		Description: updateProject.Description,
