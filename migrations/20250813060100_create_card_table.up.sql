@@ -5,6 +5,7 @@ CREATE TABLE cards (
     card_type SMAllINT,
     parent_id INT REFERENCES cards(id) ON DELETE SET NULL,
     creater_id INT REFERENCES users(id),
+    project_id INT REFERENCES projects(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL

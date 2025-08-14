@@ -16,6 +16,7 @@ type CreateCardRequest struct {
 	Description string `json:"description" binding:"required"`
 	CardType    uint   `json:"card_type" binding:"required"`
 	CreaterID   uint   `json:"creater_id" binding:"required"`
+	ProjectId   *uint  `json:"project_id"`
 	ParentID    *uint  `json:"parent_id"`
 }
 
@@ -34,6 +35,7 @@ func (h *CardHandler) CreateCard(c *gin.Context) {
 		Name:        req.Name,
 		Description: req.Description,
 		CardType:    req.CardType,
+		ProjectID:   req.ProjectId,
 		CreaterID:   req.CreaterID,
 		ParentID:    req.ParentID,
 	}
