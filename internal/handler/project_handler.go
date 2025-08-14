@@ -1,18 +1,20 @@
-package projects
+package handler
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/stephenZ22/mini_dash/internal/model"
+	"github.com/stephenZ22/mini_dash/internal/service"
 	"github.com/stephenZ22/mini_dash/pkg/logger"
 )
 
 type ProjectHandler struct {
-	svc *ProjectService
+	svc *service.ProjectService
 }
 
-func NewProjectHandler(svc *ProjectService) *ProjectHandler {
+func NewProjectHandler(svc *service.ProjectService) *ProjectHandler {
 	return &ProjectHandler{
 		svc: svc,
 	}
@@ -78,7 +80,7 @@ func (ph *ProjectHandler) UpdateProject(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return
 	}
-	project := Project{
+	project := model.Project{
 		Name:        updateProject.Name,
 		Description: updateProject.Description,
 	}

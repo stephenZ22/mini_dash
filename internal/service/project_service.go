@@ -1,19 +1,23 @@
-package projects
+package service
 
-import "gorm.io/gorm"
+import (
+	"github.com/stephenZ22/mini_dash/internal/model"
+	"github.com/stephenZ22/mini_dash/internal/repository"
+	"gorm.io/gorm"
+)
 
 type ProjectService struct {
-	repo *ProjectRepository
+	repo *repository.ProjectRepository
 }
 
-func NewProjectService(repo *ProjectRepository) *ProjectService {
+func NewProjectService(repo *repository.ProjectRepository) *ProjectService {
 	return &ProjectService{
 		repo: repo,
 	}
 }
 
 func (s *ProjectService) CreateProject(name, desc string) error {
-	project := &Project{
+	project := &model.Project{
 		Name:        name,
 		Description: desc,
 	}
@@ -24,7 +28,7 @@ func (s *ProjectService) CreateProject(name, desc string) error {
 	return nil
 }
 
-func (s *ProjectService) GetProject(id uint) (*Project, error) {
+func (s *ProjectService) GetProject(id uint) (*model.Project, error) {
 	project, err := s.repo.GetByID(id)
 	if err != nil {
 		return nil, err
@@ -32,7 +36,7 @@ func (s *ProjectService) GetProject(id uint) (*Project, error) {
 	return project, nil
 }
 
-func (s *ProjectService) UpdateProject(id uint, project *Project) error {
+func (s *ProjectService) UpdateProject(id uint, project *model.Project) error {
 	if err := s.repo.Update(id, project); err != nil {
 		return err
 	}
@@ -45,7 +49,7 @@ func (s *ProjectService) DeleteProject(id uint) error {
 	}
 	return nil
 }
-func (s *ProjectService) ListProjects(pageSize, pageNum int) ([]Project, error) {
+func (s *ProjectService) ListProjects(pageSize, pageNum int) ([]model.Project, error) {
 	if pageSize < 0 || pageNum < 0 {
 		return nil, gorm.ErrInvalidValue
 	}

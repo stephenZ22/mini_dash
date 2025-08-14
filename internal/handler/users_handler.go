@@ -1,14 +1,16 @@
-package users
+package handler
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/stephenZ22/mini_dash/internal/model"
+	"github.com/stephenZ22/mini_dash/internal/service"
 )
 
 type UserHandler struct {
-	svc UserService
+	svc service.UserService
 }
 
 type CreateUserRequest struct {
@@ -17,7 +19,7 @@ type CreateUserRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func NewUserHandler(svc UserService) *UserHandler {
+func NewUserHandler(svc service.UserService) *UserHandler {
 	return &UserHandler{svc: svc}
 }
 
@@ -28,7 +30,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	user := &User{
+	user := &model.User{
 		Username: req.Name,
 		Email:    req.Email,
 		Password: req.Password,
@@ -65,7 +67,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	var user User
+	var user model.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return

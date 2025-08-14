@@ -1,4 +1,4 @@
-package projects
+package model
 
 import (
 	"fmt"

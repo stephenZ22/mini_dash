@@ -1,8 +1,11 @@
-package projects
+package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/stephenZ22/mini_dash/internal/handler"
+)
 
-func RegisterRoutes(router *gin.Engine, handler *ProjectHandler) *gin.Engine {
+func RegisterProjectRoutes(router *gin.Engine, handler *handler.ProjectHandler) *gin.Engine {
 
 	// Project routes
 	router.POST("/projects", handler.CreateProject)

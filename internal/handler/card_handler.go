@@ -1,14 +1,16 @@
-package cards
+package handler
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/stephenZ22/mini_dash/internal/model"
+	"github.com/stephenZ22/mini_dash/internal/service"
 )
 
 type CardHandler struct {
-	svc CardService
+	svc service.CardService
 }
 
 type CreateCardRequest struct {
@@ -20,7 +22,7 @@ type CreateCardRequest struct {
 	ParentID    *uint  `json:"parent_id"`
 }
 
-func NewCardHandler(svc CardService) *CardHandler {
+func NewCardHandler(svc service.CardService) *CardHandler {
 	return &CardHandler{svc: svc}
 }
 
@@ -31,7 +33,7 @@ func (h *CardHandler) CreateCard(c *gin.Context) {
 		return
 	}
 
-	card := &Card{
+	card := &model.Card{
 		Name:        req.Name,
 		Description: req.Description,
 		CardType:    req.CardType,
@@ -71,7 +73,7 @@ func (h *CardHandler) UpdateCard(c *gin.Context) {
 		return
 	}
 
-	var card Card
+	var card model.Card
 	if err := c.ShouldBindJSON(&card); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return

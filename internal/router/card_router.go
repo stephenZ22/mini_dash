@@ -1,8 +1,11 @@
-package cards
+package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/stephenZ22/mini_dash/internal/handler"
+)
 
-func RegisterRoutes(router *gin.Engine, handler *CardHandler) *gin.Engine {
+func RegisterCardRoutes(router *gin.Engine, handler *handler.CardHandler) *gin.Engine {
 	// Card routes
 	router.POST("/card", handler.CreateCard)
 	router.GET("/card/:id", handler.GetCard)
