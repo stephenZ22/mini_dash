@@ -12,9 +12,11 @@ type CardHandler struct {
 }
 
 type CreateCardRequest struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	Description string `json:"description" binding:"required"`
+	CardType    uint   `json:"card_type" binding:"required"`
+	CreaterID   uint   `json:"creater_id" binding:"required"`
+	ParentID    *uint  `json:"parent_id"`
 }
 
 func NewCardHandler(svc CardService) *CardHandler {
@@ -29,9 +31,11 @@ func (h *CardHandler) CreateCard(c *gin.Context) {
 	}
 
 	card := &Card{
-		// Username: req.Name,
-		// Email:    req.Email,
-		// Password: req.Password,
+		Name:        req.Name,
+		Description: req.Description,
+		CardType:    req.CardType,
+		CreaterID:   req.CreaterID,
+		ParentID:    req.ParentID,
 	}
 
 	if err := h.svc.CreateCard(card); err != nil {

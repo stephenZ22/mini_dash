@@ -2,9 +2,9 @@ package cards
 
 import (
 	"fmt"
-	"os/user"
 	"time"
 
+	"github.com/stephenZ22/mini_dash/internal/users"
 	"gorm.io/gorm"
 )
 
@@ -15,15 +15,23 @@ import (
 // parent_id INT REFERENCES cards(id) ON DELETE SET NULL,
 // creater_id INT REFERENCES users(id)
 
+type CardType int
+
+const (
+	Feature CardType = iota + 1
+	Task
+	Bug
+)
+
 type Card struct {
-	ID          uint   `json:"id" gorm:"primaryKey"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	CardType    uint   `json:"card_type"`
-	CreaterID   uint
-	Creater     *user.User     `gorm:"foreignKey:CreaterID"`
+	ID          uint           `json:"id" gorm:"primaryKey"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	CardType    uint           `json:"card_type"`
+	CreaterID   uint           `json:"creater_id"`
+	Creater     *users.User    `gorm:"foreignKey:CreaterID;references:ID"`
 	ParentID    *uint          `json:"parent_id"`
-	Parent      *Card          `gorm:"foreignKey:ParentID"`
+	Parent      *Card          `gorm:"foreignKey:ParentID;references:ID"`
 	Children    []Card         `gorm:"foreignKey:ParentID;references:ID"`
 	CreatedAt   time.Time      `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt   time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
