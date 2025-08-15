@@ -10,17 +10,24 @@ import (
 // TODO use exported interface name
 // ProjectRepository is the interface for project repository operations
 
-type ProjectRepository struct {
+type ProjectRepository interface {
+	Create(project *model.Project) error
+	GetByID(id uint) (*model.Project, error)
+	Update(id uint, project *model.Project) error
+	Delete(id uint) error
+	List(page_size, page_num int) ([]model.Project, error)
+}
+type projectRepository struct {
 	db *gorm.DB
 }
 
-func NewProjectRepository(db *gorm.DB) *ProjectRepository {
-	return &ProjectRepository{
+func NewProjectRepository(db *gorm.DB) ProjectRepository {
+	return &projectRepository{
 		db: db,
 	}
 }
 
-func (r *ProjectRepository) Create(project *model.Project) error {
+func (r *projectRepository) Create(project *model.Project) error {
 
 	logger.MiniLogger().Info("project Creating", "project:", project)
 	if err := r.db.Create(project).Error; err != nil {
@@ -29,7 +36,7 @@ func (r *ProjectRepository) Create(project *model.Project) error {
 	return nil
 }
 
-func (r *ProjectRepository) GetByID(id uint) (*model.Project, error) {
+func (r *projectRepository) GetByID(id uint) (*model.Project, error) {
 	var project model.Project
 	if err := r.db.First(&project, id).Error; err != nil {
 		return nil, err
@@ -37,7 +44,7 @@ func (r *ProjectRepository) GetByID(id uint) (*model.Project, error) {
 	return &project, nil
 }
 
-func (r *ProjectRepository) Update(id uint, project *model.Project) error {
+func (r *projectRepository) Update(id uint, project *model.Project) error {
 	logger.MiniLogger().Info("project Updating", "project:", project)
 	// 找到对应的project并更新
 	if err := r.db.First(&model.Project{}, id).Error; err != nil {
@@ -51,14 +58,14 @@ func (r *ProjectRepository) Update(id uint, project *model.Project) error {
 	return nil
 }
 
-func (r *ProjectRepository) Delete(id uint) error {
+func (r *projectRepository) Delete(id uint) error {
 	if err := r.db.Delete(&model.Project{}, id).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *ProjectRepository) List(page_size, page_num int) ([]model.Project, error) {
+func (r *projectRepository) List(page_size, page_num int) ([]model.Project, error) {
 	var projects []model.Project
 
 	if page_size < 0 || page_num < 0 {
