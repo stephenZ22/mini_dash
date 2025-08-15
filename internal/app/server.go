@@ -36,6 +36,9 @@ func registerAllRoutes(engin *gin.Engine, db *gorm.DB) *gin.Engine {
 	card_handler := handler.NewCardHandler(card_service)
 	router.RegisterCardRoutes(engin, card_handler)
 
+	login_service := service.NewLoginService(user_repository)
+	login_handler := handler.NewLoginHandler(login_service)
+	router.RegisterLoginRoutes(engin, login_handler)
 	return engin
 }
 
