@@ -3,15 +3,18 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/stephenZ22/mini_dash/internal/handler"
+	"github.com/stephenZ22/mini_dash/internal/middleware"
 )
 
-func RegisterProjectRoutes(router *gin.Engine, handler *handler.ProjectHandler) *gin.Engine {
+func RegisterProjectRoutes(router *gin.Engine, handler *handler.ProjectHandler) {
 
 	// Project routes
-	router.POST("/projects", handler.CreateProject)
-	router.GET("/projects/:id", handler.GetProject)
-	router.PUT("/projects/:id", handler.UpdateProject)
-	router.DELETE("/projects/:id", handler.DeleteProject)
-	router.GET("/projects", handler.ListProjects)
-	return router
+	projects_router := router.Group("/projects", middleware.JWTAuth())
+	{
+		projects_router.POST("", handler.CreateProject)
+		projects_router.GET("/:id", handler.GetProject)
+		projects_router.PUT("/:id", handler.UpdateProject)
+		projects_router.DELETE("/:id", handler.DeleteProject)
+		projects_router.GET("", handler.ListProjects)
+	}
 }
