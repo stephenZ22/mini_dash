@@ -46,7 +46,7 @@ func (r *userRepository) DeleteUser(id uint) error {
 func (r *userRepository) CheckPassword(username, password string) (ok bool, err error) {
 	var user model.User
 
-	if err := r.db.Where("name = ?", username).First(&user).Error; err != nil {
+	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
 		return false, err
 	}
 

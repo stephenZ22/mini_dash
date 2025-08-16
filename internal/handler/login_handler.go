@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/stephenZ22/mini_dash/internal/middleware"
 	"github.com/stephenZ22/mini_dash/internal/service"
+	"github.com/stephenZ22/mini_dash/pkg/logger"
 )
 
 type LoginHandler struct {
@@ -26,10 +28,10 @@ func (lg *LoginHandler) LoginByPassword(c *gin.Context) {
 	var login_request LoginRequest
 
 	if err := c.ShouldBindJSON(&login_request); err != nil {
-
+		logger.MiniLogger().Error("invalid request data")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 0,
-			"msg":  err,
+			"msg":  err.Error(),
 			"data": nil,
 		})
 		return
@@ -37,6 +39,19 @@ func (lg *LoginHandler) LoginByPassword(c *gin.Context) {
 
 	_, err := lg.svc.LoginByPassword(login_request.Username, login_request.Password)
 	if err != nil {
+		logger.MiniLogger().Error("login by password error\n")
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  err,
+			"data": nil,
+		})
+
+		return
+	}
+
+	token, err := middleware.GenerateJWTToken(login_request.Username)
+	if err != nil {
+		logger.MiniLogger().Errorf("generate jwt token error: %s", err.Error())
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
 			"msg":  err,
@@ -49,6 +64,6 @@ func (lg *LoginHandler) LoginByPassword(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": 1,
 		"msg":  "login successfully",
-		"data": "token", // use jwt token
+		"data": token, // use jwt token
 	})
 }
