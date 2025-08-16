@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/stephenZ22/mini_dash/internal/model"
 	"github.com/stephenZ22/mini_dash/internal/repository"
+	"github.com/stephenZ22/mini_dash/pkg/logger"
 	"gorm.io/gorm"
 )
 
@@ -24,6 +25,7 @@ func NewProjectService(repo repository.ProjectRepository) ProjectService {
 }
 
 func (s *projectService) CreateProject(name, desc string) error {
+	logger.MiniLogger().Infof("create project name: %s, description: %s", name, desc)
 	project := &model.Project{
 		Name:        name,
 		Description: desc,
