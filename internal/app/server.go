@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stephenZ22/mini_dash/internal/handler"
+	"github.com/stephenZ22/mini_dash/internal/middleware"
 	"github.com/stephenZ22/mini_dash/internal/repository"
 	"github.com/stephenZ22/mini_dash/internal/router"
 	"github.com/stephenZ22/mini_dash/internal/service"
@@ -44,7 +45,7 @@ func registerAllRoutes(engin *gin.Engine, db *gorm.DB) *gin.Engine {
 
 func NewMiniDashApp(db *gorm.DB) *MiniDashApp {
 	engin := gin.New()
-	engin.Use(logger.GinLogger(logger.MiniLogger()), gin.Recovery()) // Use recovery middleware to handle panics
+	engin.Use(logger.GinLogger(logger.MiniLogger()), gin.Recovery(), middleware.CORSMiddleware()) // Use recovery middleware to handle panics
 	engin = registerAllRoutes(engin, db)
 
 	return &MiniDashApp{
