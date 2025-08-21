@@ -49,6 +49,7 @@ func (lg *LoginHandler) LoginByPassword(c *gin.Context) {
 		return
 	}
 
+	// TODO add return userinfo
 	token, err := middleware.GenerateJWTToken(login_request.Username)
 	if err != nil {
 		logger.MiniLogger().Errorf("generate jwt token error: %s", err.Error())
@@ -64,6 +65,6 @@ func (lg *LoginHandler) LoginByPassword(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": 1,
 		"msg":  "login successfully",
-		"data": token, // use jwt token
+		"data": gin.H{"token": token, "username": login_request.Username}, // use jwt token
 	})
 }
