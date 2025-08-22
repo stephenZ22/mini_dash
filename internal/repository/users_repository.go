@@ -12,7 +12,7 @@ type UserRepository interface {
 	GetUserByID(id uint) (*model.User, error)
 	UpdateUser(user *model.User) error
 	DeleteUser(id uint) error
-	CheckPassword(username, password string) (ok bool, err error)
+	CheckPassword(username, password string) (ok *model.User, err error)
 }
 
 type userRepository struct {
@@ -43,16 +43,16 @@ func (r *userRepository) DeleteUser(id uint) error {
 	return r.db.Delete(&model.User{}, id).Error
 }
 
-func (r *userRepository) CheckPassword(username, password string) (ok bool, err error) {
+func (r *userRepository) CheckPassword(username, password string) (*model.User, error) {
 	var user model.User
 
 	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
-		return false, err
+		return nil, err
 	}
 
 	if user.Password == password {
-		return true, nil
+		return &user, nil
 	}
 
-	return false, errors.New("invalid password")
+	return nil, errors.New("invalid password")
 }

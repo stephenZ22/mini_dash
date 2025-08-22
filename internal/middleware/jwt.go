@@ -7,16 +7,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/stephenZ22/mini_dash/internal/model"
 	"github.com/stephenZ22/mini_dash/pkg/logger"
 )
 
 var secret = "minidash"
 
-func GenerateJWTToken(username string) (string, error) {
+func GenerateJWTToken(user *model.User) (string, error) {
 	claims := jwt.MapClaims{
-		"user_name": username,
-		"exp":       time.Now().Add(7 * 24 * time.Hour).Unix(),
-		"iat":       time.Now().Unix(),
+		"user_id":  user.ID,
+		"username": user.Username,
+		"email":    user.Email,
+		"exp":      time.Now().Add(7 * 24 * time.Hour).Unix(),
+		"iat":      time.Now().Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -55,14 +58,9 @@ func JWTAuth() gin.HandlerFunc {
 		}
 
 		// 将解析出来的 claims 存到 gin.Context
-		c.Set("user_name", claims["user_name"])
-
-		// logger.MiniLogger().Infof("jwt token authorization successfully current_username is %s", claims["user_name"].(string))
-		if username, ok := claims["user_name"].(string); ok {
-			logger.MiniLogger().Infof("jwt token authorization successfully current_username is %s", username)
-		} else {
-			logger.MiniLogger().Warn("user_name claim is missing or not a string")
-		}
+		c.Set("username", claims["username"])
+		c.Set("user_id", claims["user_id"])
+		c.Set("user_email", claims["email"])
 
 		c.Next()
 	}

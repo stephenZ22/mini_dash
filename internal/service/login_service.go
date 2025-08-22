@@ -1,9 +1,12 @@
 package service
 
-import "github.com/stephenZ22/mini_dash/internal/repository"
+import (
+	"github.com/stephenZ22/mini_dash/internal/model"
+	"github.com/stephenZ22/mini_dash/internal/repository"
+)
 
 type LoginService interface {
-	LoginByPassword(username, password string) (bool, error)
+	LoginByPassword(username, password string) (*model.User, error)
 }
 
 type loginService struct {
@@ -15,7 +18,7 @@ func NewLoginService(repo repository.UserRepository) LoginService {
 		repo: repo,
 	}
 }
-func (lg *loginService) LoginByPassword(username, password string) (bool, error) {
-	ok, err := lg.repo.CheckPassword(username, password)
-	return ok, err
+func (lg *loginService) LoginByPassword(username, password string) (*model.User, error) {
+	user, err := lg.repo.CheckPassword(username, password)
+	return user, err
 }

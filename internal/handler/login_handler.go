@@ -37,7 +37,7 @@ func (lg *LoginHandler) LoginByPassword(c *gin.Context) {
 		return
 	}
 
-	_, err := lg.svc.LoginByPassword(login_request.Username, login_request.Password)
+	user, err := lg.svc.LoginByPassword(login_request.Username, login_request.Password)
 	if err != nil {
 		logger.MiniLogger().Error("login by password error\n")
 		c.JSON(http.StatusOK, gin.H{
@@ -49,8 +49,7 @@ func (lg *LoginHandler) LoginByPassword(c *gin.Context) {
 		return
 	}
 
-	// TODO add return userinfo
-	token, err := middleware.GenerateJWTToken(login_request.Username)
+	token, err := middleware.GenerateJWTToken(user)
 	if err != nil {
 		logger.MiniLogger().Errorf("generate jwt token error: %s", err.Error())
 		c.JSON(http.StatusOK, gin.H{
@@ -65,6 +64,12 @@ func (lg *LoginHandler) LoginByPassword(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": 1,
 		"msg":  "login successfully",
-		"data": gin.H{"token": token, "username": login_request.Username}, // use jwt token
+		"data": gin.H{
+			"token": token,
+			"user": gin.H{
+				"name":  user.Username,
+				"id":    user.ID,
+				"email": user.Email,
+			}}, // use jwt token
 	})
 }
