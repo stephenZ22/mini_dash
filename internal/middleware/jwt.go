@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -14,8 +15,9 @@ import (
 var secret = "minidash"
 
 func GenerateJWTToken(user *model.User) (string, error) {
+	logger.MiniLogger().Infof("generate jwt token by id: %d, name: %s. email: %s", user.ID, user.Username, user.Email)
 	claims := jwt.MapClaims{
-		"user_id":  user.ID,
+		"user_id":  fmt.Sprintf("%d", user.ID),
 		"username": user.Username,
 		"email":    user.Email,
 		"exp":      time.Now().Add(7 * 24 * time.Hour).Unix(),

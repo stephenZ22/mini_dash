@@ -8,7 +8,7 @@ import (
 )
 
 type ProjectService interface {
-	CreateProject(name, desc string) error
+	CreateProject(name, desc string, user_id uint) error
 	GetProject(id uint) (*model.Project, error)
 	UpdateProject(id uint, project *model.Project) error
 	DeleteProject(id uint) error
@@ -24,11 +24,12 @@ func NewProjectService(repo repository.ProjectRepository) ProjectService {
 	}
 }
 
-func (s *projectService) CreateProject(name, desc string) error {
-	logger.MiniLogger().Infof("create project name: %s, description: %s", name, desc)
+func (s *projectService) CreateProject(name, desc string, user_id uint) error {
+	logger.MiniLogger().Infof("create project name: %s, description: %s, user_id: %d", name, desc, user_id)
 	project := &model.Project{
 		Name:        name,
 		Description: desc,
+		CreaterID:   user_id,
 	}
 
 	if err := s.repo.Create(project); err != nil {

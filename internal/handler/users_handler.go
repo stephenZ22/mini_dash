@@ -29,7 +29,6 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return
 	}
-
 	user := &model.User{
 		Username: req.Name,
 		Email:    req.Email,

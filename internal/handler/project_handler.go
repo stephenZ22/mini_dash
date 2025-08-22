@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/stephenZ22/mini_dash/internal/helper"
 	"github.com/stephenZ22/mini_dash/internal/model"
 	"github.com/stephenZ22/mini_dash/internal/service"
 	"github.com/stephenZ22/mini_dash/pkg/logger"
@@ -23,6 +24,7 @@ func NewProjectHandler(svc service.ProjectService) *ProjectHandler {
 type CreateProjectRequest struct {
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
+	// UserID      int    `json:"user_id" binding:"required"`
 }
 
 type UpdateProjectRequest struct {
@@ -37,7 +39,19 @@ func (ph *ProjectHandler) CreateProject(c *gin.Context) {
 		return
 	}
 
-	if err := ph.svc.CreateProject(req.Name, req.Description); err != nil {
+	creater_id, err := helper.GetUserID(c)
+	if err != nil {
+		logger.MiniLogger().Errorf("can not find current login user")
+		c.JSON(http.StatusNotAcceptable, gin.H{
+			"code": 0,
+			"msg":  "can not find current logined user",
+		})
+		return
+	} else {
+		logger.MiniLogger().Infof("current_user id: %d", creater_id)
+	}
+
+	if err := ph.svc.CreateProject(req.Name, req.Description, creater_id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create project"})
 		return
 	}
