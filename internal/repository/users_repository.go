@@ -13,6 +13,7 @@ type UserRepository interface {
 	UpdateUser(user *model.User) error
 	DeleteUser(id uint) error
 	CheckPassword(username, password string) (ok *model.User, err error)
+	List(page_size, page_num int) ([]model.User, error)
 }
 
 type userRepository struct {
@@ -55,4 +56,24 @@ func (r *userRepository) CheckPassword(username, password string) (*model.User, 
 	}
 
 	return nil, errors.New("invalid password")
+}
+
+func (r *userRepository) List(page_size, page_num int) ([]model.User, error) {
+	var users []model.User
+
+	if page_size < 0 || page_num < 0 {
+		return nil, gorm.ErrInvalidValue
+	}
+
+	if page_num == 0 {
+		page_num = 1
+	}
+
+	if page_size == 0 {
+		page_size = 20
+	}
+	if err := r.db.Offset((page_num - 1) * page_size).Limit(page_size).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
 }

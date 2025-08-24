@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/stephenZ22/mini_dash/internal/model"
 	"github.com/stephenZ22/mini_dash/internal/repository"
+	"gorm.io/gorm"
 )
 
 type UserService interface {
@@ -10,6 +11,7 @@ type UserService interface {
 	GetUserByID(id uint) (*model.User, error)
 	UpdateUser(user *model.User) error
 	DeleteUser(id uint) error
+	ListUsers(pageSize, pageNum int) ([]model.User, error)
 }
 
 type userService struct {
@@ -34,4 +36,24 @@ func (s *userService) UpdateUser(user *model.User) error {
 
 func (s *userService) DeleteUser(id uint) error {
 	return s.repo.DeleteUser(id)
+}
+
+func (s *userService) ListUsers(pageSize, pageNum int) ([]model.User, error) {
+	if pageSize < 0 || pageNum < 0 {
+		return nil, gorm.ErrInvalidValue
+	}
+
+	if pageNum == 0 {
+		pageNum = 1
+	}
+
+	if pageSize == 0 {
+		pageSize = 10 // Default page size
+	}
+
+	users, err := s.repo.List(pageSize, pageNum)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }

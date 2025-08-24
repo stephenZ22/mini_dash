@@ -10,6 +10,7 @@ func RegisterUserRoutes(router *gin.Engine, handler *handler.UserHandler) {
 	// User routes
 	user_routers := router.Group("/users", middleware.JWTAuth())
 	{
+		user_routers.GET("", handler.ListUserss)
 		user_routers.POST("", handler.CreateUser)
 		user_routers.GET("/:id", handler.GetUser)
 		user_routers.PUT("/:id", handler.UpdateUser)

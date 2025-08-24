@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stephenZ22/mini_dash/internal/model"
 	"github.com/stephenZ22/mini_dash/internal/service"
+	"github.com/stephenZ22/mini_dash/pkg/logger"
 )
 
 type UserHandler struct {
@@ -95,4 +96,28 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"code": 1, "message": "User deleted successfully"})
+}
+
+func (ph *UserHandler) ListUserss(c *gin.Context) {
+	pageSize := 10
+	pageNum := 1
+	if sizeStr := c.Query("page_size"); sizeStr != "" {
+		if size, err := strconv.Atoi(sizeStr); err == nil {
+			pageSize = size
+		}
+	}
+	if numStr := c.Query("page_num"); numStr != "" {
+		if num, err := strconv.Atoi(numStr); err == nil {
+			pageNum = num
+		}
+	}
+
+	logger.MiniLogger().Info("Listing projects", "page_size:", pageSize, "page_num:", pageNum)
+	users, err := ph.svc.ListUsers(pageSize, pageNum)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to list projects"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": 1, "message": "Projects retrieved successfully", "data": users})
 }
